@@ -2,6 +2,7 @@ package com.example.csc325_firebase_webview_auth.modelview;//package modelview;
 
 import com.example.csc325_firebase_webview_auth.App;
 import com.example.csc325_firebase_webview_auth.models.Person;
+import com.example.csc325_firebase_webview_auth.models.User;
 import com.example.csc325_firebase_webview_auth.viewmodel.AccessDataViewModel;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
@@ -21,11 +22,14 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
@@ -34,6 +38,8 @@ public class AccessFBView {
 
      @FXML
     private TextField nameField;
+    @FXML
+    private Label welcomeTag;
     @FXML
     private TextField majorField;
     @FXML
@@ -51,12 +57,13 @@ public class AccessFBView {
         return listOfUsers;
     }
 
+    @FXML
     void initialize() {
-
         AccessDataViewModel accessDataViewModel = new AccessDataViewModel();
         nameField.textProperty().bindBidirectional(accessDataViewModel.userNameProperty());
         majorField.textProperty().bindBidirectional(accessDataViewModel.userMajorProperty());
-        writeButton.disableProperty().bind(accessDataViewModel.isWritePossibleProperty().not());
+        //writeButton.disableProperty().bind(accessDataViewModel.isWritePossibleProperty().not());
+        welcomeTag.setText("Welcome, " + User.getUser().getName());
     }
 
     @FXML
@@ -69,9 +76,14 @@ public class AccessFBView {
         readFirebase();
     }
 
-            @FXML
-    private void regRecord(ActionEvent event) {
-        registerUser();
+    @FXML
+    private void logoutButtonClicked(ActionEvent event) throws IOException {
+        App.setRoot("signin.fxml");
+    }
+
+    @FXML
+    private void menuCloseClicked(ActionEvent event) throws IOException {
+        Platform.exit();
     }
 
      @FXML
